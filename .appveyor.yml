@@ -38,12 +38,9 @@ configuration:
 environment:
   SETUP_PATH: .
   _PVXS_ABORT_ON_CRIT: 1
-  PVXS_LOG: pvxs.*=WARN
+  PVXS_LOG: pvxs.*=DEBUG
 
   matrix:
-  - CMP: mingw
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-    BASE: 7.0
   - CMP: vs2019
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     BASE: 7.0
@@ -51,6 +48,9 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     BASE: 7.0
   - CMP: vs2015
+    BASE: 7.0
+  - CMP: mingw
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     BASE: 7.0
 
 # Platform: architecture
