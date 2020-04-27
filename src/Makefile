@@ -58,6 +58,7 @@ INC += pvxs/srvcommon.h
 INC += pvxs/sharedpv.h
 INC += pvxs/source.h
 INC += pvxs/client.h
+INC += pvxs/ioc.h
 
 LIBRARY = pvxs
 
@@ -74,6 +75,7 @@ LIB_SRCS += dataencode.cpp
 LIB_SRCS += nt.cpp
 LIB_SRCS += evhelper.cpp
 LIB_SRCS += udp_collector.cpp
+LIB_SRCS += ioc.cpp
 
 LIB_SRCS += config.cpp
 LIB_SRCS += conn.cpp

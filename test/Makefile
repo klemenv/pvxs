@@ -13,6 +13,9 @@ include $(TOP)/configure/CONFIG_PVXS_VERSION
 USR_CPPFLAGS += -I$(TOP)/src
 
 PROD_LIBS += pvxs Com
+ifeq ($(BASE_3_14),YES)
+PROD_LIBS += dbIoc
+endif
 
 TESTPROD_HOST += testsock
 testsock_SRCS += testsock.cpp
