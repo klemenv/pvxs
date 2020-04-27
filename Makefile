@@ -1,5 +1,5 @@
 # Makefile at top of application tree
-TOP = .
+TOP = /home/kvx/git/pvxs
 include $(TOP)/configure/CONFIG
 
 # Directories to build, any order

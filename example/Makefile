@@ -8,10 +8,9 @@ include $(TOP)/configure/CONFIG_PVXS_VERSION
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
-USR_CXXFLAGS = -O0 -ggdb -g
 
 PROD_LIBS += pvxs Com
-ifeq ($(BASE_3_14),YES)
+ifndef BASE_3_16
 PROD_LIBS += dbIoc
 endif
 
