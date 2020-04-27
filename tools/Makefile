@@ -13,8 +13,11 @@ include $(TOP)/configure/CONFIG_PVXS_VERSION
 USR_CPPFLAGS += -I$(TOP)/src
 
 PROD_LIBS += pvxs Com
-ifndef BASE_3_16
+ifndef BASE_3_15
 PROD_LIBS += dbIoc
+endif
+ifeq ($(BASE_3_15),YES)
+PROD_LIBS += dbCore
 endif
 
 PROD += pvxvct
