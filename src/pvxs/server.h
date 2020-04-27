@@ -79,9 +79,9 @@ public:
     //! Suitable for use in self-contained unit-tests.
     client::Config clientConfig() const;
 
-    //! Add a SharedPV to the builtin StaticSource
+    //! Add a SharedPV to the "builtin" StaticSource
     Server& addPV(const std::string& name, const SharedPV& pv);
-    //! Remove a SharedPV from the builtin StaticSource
+    //! Remove a SharedPV from the "builtin" StaticSource
     Server& removePV(const std::string& name);
 
     //! Add a Source to this server with an arbitrary source name.
@@ -102,7 +102,7 @@ public:
                                       int order =0);
 
     //! List all source names and priorities.
-    void listSource(std::vector<std::pair<std::string, int> >& names);
+    std::vector<std::pair<std::string, int> > listSource();
 
     explicit operator bool() const { return !!pvt; }
 

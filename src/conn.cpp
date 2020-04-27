@@ -94,8 +94,10 @@ void ConnBase::bevEvent(short events)
 void ConnBase::bevRead()
 {
     auto rx = bufferevent_get_input(bev.get());
+    unsigned niter;
 
-    while(bev && evbuffer_get_length(rx)>=8) {
+
+    for(niter=0; niter<4 && bev && evbuffer_get_length(rx)>=8; niter++) {
         uint8_t header[8];
 
         auto ret = evbuffer_copyout(rx, header, sizeof(header));
@@ -114,6 +116,7 @@ void ConnBase::bevRead()
         if(header[2]&pva_flags::Control) {
             // Control messages are not actually useful
             evbuffer_drain(rx, 8);
+            bufferevent_setwatermark(bev.get(), EV_READ, 8, tcp_readahead);
             continue;
         }
         // application message
@@ -201,9 +204,10 @@ void ConnBase::bevRead()
             if(auto n = evbuffer_get_length(segBuf.get()))
                 evbuffer_drain(segBuf.get(), n);
 
-            // wait for next header
-            bufferevent_setwatermark(bev.get(), EV_READ, 8, tcp_readahead);
         }
+
+        // wait for next header
+        bufferevent_setwatermark(bev.get(), EV_READ, 8, tcp_readahead);
     }
 
     if(!bev) {

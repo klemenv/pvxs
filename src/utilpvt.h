@@ -24,8 +24,6 @@
 
 #include <compilerDependencies.h>
 
-#include <epicsTypes.h>
-
 #include <pvxs/version.h>
 #include <pvxs/util.h>
 
@@ -36,35 +34,6 @@
 #    define EPICS_ALWAYS_INLINE inline
 #  endif
 #endif
-
-#if EPICS_VERSION_INT>=VERSION_INT(3,15,0,0)
-#  define HAVE_EPICSPARSE
-#  define HAVE_EPICSINT64
-#endif
-
-#ifndef HAVE_EPICSINT64
-  typedef int64_t epicsInt64;
-  typedef uint64_t epicsUInt64;
-#endif // HAVE_EPICSINT64
-
-#ifndef HAVE_EPICSPARSE
-  PVXS_API int epicsParseInt8(const char* s, epicsInt8* val, int base, char** units);
-  PVXS_API int epicsParseInt16(const char* s, epicsInt16* val, int base, char** units);
-  PVXS_API int epicsParseInt32(const char* s, epicsInt32* val, int base, char** units);
-  PVXS_API int epicsParseInt64(const char* s, epicsInt64* val, int base, char** units);
-  PVXS_API int epicsParseUInt8(const char* s, epicsUInt8* val, int base, char** units);
-  PVXS_API int epicsParseUInt16(const char* s, epicsUInt16* val, int base, char** units);
-  PVXS_API int epicsParseUInt32(const char* s, epicsUInt32* val, int base, char** units);
-  PVXS_API int epicsParseUInt64(const char* s, epicsUInt64* val, int base, char** units);
-  PVXS_API int epicsParseFloat(const char* s, epicsFloat32* val, char** units);
-  PVXS_API int epicsParseDouble(const char* s, epicsFloat64* val, char** units);
-# define epicsParseFloat32(str, to, units) epicsParseFloat(str, to, units)
-# define epicsParseFloat64(str, to, units) epicsParseDouble(str, to, units)
-# define epicsParseLong(str, to, base, units) epicsParseInt32(str, to, base, units)
-# define epicsParseULong(str, to, base, units) epicsParseUInt32(str, to, base, units)
-# define epicsParseLLong(str, to, base, units) epicsParseInt64(str, to, base, units)
-# define epicsParseULLong(str, to, base, units) epicsParseUInt64(str, to, base, units)
-#endif // HAVE_EPICSPARSE
 
 namespace pvxs {namespace impl {
 
@@ -77,24 +46,6 @@ struct SB {
     template<typename T>
     SB& operator<<(const T& i) { strm<<i; return *this; }
 };
-
-namespace idetail {
-// specific specializations in util.cpp
-template <typename T>
-struct as_str {PVXS_API static T op(const char *s);};
-} // namespace idetail
-
-template <typename T>
-inline T lexical_cast(const char *s)
-{
-    return idetail::as_str<T>::op(s);
-}
-
-template <typename T>
-inline T lexical_cast(const std::string& s)
-{
-    return idetail::as_str<T>::op(s.c_str());
-}
 
 void indent(std::ostream& strm, unsigned level);
 
@@ -130,6 +81,19 @@ constexpr idetail::Range<I> range(I end) { return idetail::Range<I>{I(0), end}; 
 
 template<typename I>
 constexpr idetail::Range<I> range(I begin, I end) { return idetail::Range<I>{begin, end}; }
+
+template<typename T>
+T parseTo(const std::string& s); // not implemented
+
+template<>
+PVXS_API
+double parseTo<double>(const std::string& s);
+template<>
+PVXS_API
+uint64_t parseTo<uint64_t>(const std::string& s);
+template<>
+PVXS_API
+int64_t parseTo<int64_t>(const std::string& s);
 
 #ifdef _WIN32
 #  define RWLOCK_TYPE SRWLOCK

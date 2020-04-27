@@ -55,8 +55,8 @@ Server::Server(const Config& conf)
 
     // external
     pvt.reset(internal.get(), [internal](Pvt*) mutable {
-        internal->stop();
-        internal.reset();
+        auto trash(std::move(internal));
+        trash->stop();
     });
     // we don't keep a weak_ptr to the external reference.
     // Caller is entirely responsible for keeping this server running
@@ -118,12 +118,11 @@ std::shared_ptr<Source> Server::getSource(const std::string& name, int order)
     return ret;
 }
 
-void Server::listSource(std::vector<std::pair<std::string, int> > &names)
+std::vector<std::pair<std::string, int> > Server::listSource()
 {
     if(!pvt)
         throw std::logic_error("NULL Server");
-
-    names.clear();
+    std::vector<std::pair<std::string, int> > names;
 
     auto G(pvt->sourcesLock.lockReader());
 
@@ -132,6 +131,8 @@ void Server::listSource(std::vector<std::pair<std::string, int> > &names)
     for(auto& pair : pvt->sources) {
         names.emplace_back(pair.first.second, pair.first.first);
     }
+
+    return names;
 }
 
 const Config& Server::config() const
